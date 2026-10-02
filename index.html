@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora y Simulador de Desarrollos - Multimarcas Sport</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js para formateo Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,800;1,900&display=swap');
+        
+        :root {
+            --color-granate: #800020;
+            --color-granate-hover: #5c0017;
+            --color-granate-light: #fbf0f2;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #111827;
+            touch-action: manipulation;
+        }
+
+        /* Deslizadores táctiles */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            background: #800020;
+            cursor: pointer;
+            border: 3px solid #ffffff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+        }
+
+        /* Iluminación y resplandor vectorial exacto sobre la imagen */
+        .glow-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease, stroke 0.3s ease, filter 0.3s ease;
+            pointer-events: none;
+        }
+
+        .glow-overlay-active {
+            opacity: 1 !important;
+            stroke: #800020 !important;
+            fill: rgba(128, 0, 32, 0.15) !important;
+            filter: drop-shadow(0px 0px 14px rgba(128, 0, 32, 0.85)) !important;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Header Táctil con Logos Grandes -->
+    <header class="border-b border-gray-200 bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
+            <!-- Logotipo Multimarcas Sport Aumentado -->
+            <div class="flex items-center gap-4">
+                <svg width="290" height="58" viewBox="0 0 420 85" class="h-14 w-auto drop-shadow-sm cursor-pointer" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-style="italic" font-size="46" fill="#000000" letter-spacing="1">MULTIMARCAS</text>
+                    <text x="145" y="78" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-style="italic" font-size="44" fill="#800020" letter-spacing="3">SPORT</text>
+                </svg>
+                <div class="hidden lg:block h-10 w-px bg-gray-200"></div>
+                <span class="hidden lg:inline-block text-xs font-extrabold uppercase tracking-widest text-gray-400">
+                    Centro de Ingeniería y Simulación
+                </span>
+            </div>
+
+            <!-- Monograma MS Grande y Badge -->
+            <div class="flex items-center gap-4">
+                <span class="hidden sm:inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-[#fbf0f2] text-[#800020] border border-[#800020]/25 shadow-sm">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#800020] animate-pulse"></span>
+                    Terminal Táctil Pro
+                </span>
+                
+                <div class="bg-gray-50 border border-gray-200 p-1.5 rounded-2xl shadow-sm flex items-center justify-center">
+                    <img src="logo.png" alt="Logo MS" class="h-11 w-11 object-contain" onerror="this.style.display='none'">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-grow">
+
+        <!-- CAJÓN: DESARROLLO FOTORREALISTA CON VECTORES Y RED DOTS -->
+        <section class="bg-white border-2 border-gray-900 rounded-3xl p-6 lg:p-8 shadow-xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#fbf0f2] text-[#800020] border border-[#800020]/20 mb-2">
+                        <i class="fa-solid fa-microchip"></i> Modelo Físico Real de Transmisión
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                        Anatomía y Telemetría del Desarrollo
+                    </h2>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Toca los <span class="text-[#800020] font-bold">puntos rojos táctiles</span> sobre la transmisión para desplegar la telemetría y pérdidas mecánicas en tiempo real.
+                    </p>
+                </div>
+                
+                <!-- Selectores Directos -->
+                <div class="flex flex-wrap gap-1.5 self-start md:self-auto bg-gray-100 p-1.5 rounded-2xl border border-gray-200">
+                    <button onclick="selectDrivetrainPart('platos')" id="btn-part-platos" class="px-3 py-2 rounded-xl text-xs font-bold transition-all bg-[#800020] text-white shadow-sm">Platos / Biela</button>
+                    <button onclick="selectDrivetrainPart('desviador_delantero')" id="btn-part-desviador_delantero" class="px-3 py-2 rounded-xl text-xs font-bold transition-all text-gray-700 hover:text-black">Cambio Delantero</button>
+                    <button onclick="selectDrivetrainPart('cadena')" id="btn-part-cadena" class="px-3 py-2 rounded-xl text-xs font-bold transition-all text-gray-700 hover:text-black">Cadena</button>
+                    <button onclick="selectDrivetrainPart('cassette')" id="btn-part-cassette" class="px-3 py-2 rounded-xl text-xs font-bold transition-all text-gray-700 hover:text-black">Cassette</button>
+                    <button onclick="selectDrivetrainPart('cambio_trasero')" id="btn-part-cambio_trasero" class="px-3 py-2 rounded-xl text-xs font-bold transition-all text-gray-700 hover:text-black">Cambio Trasero</button>
+                    <button onclick="selectDrivetrainPart('roldanas')" id="btn-part-roldanas" class="px-3 py-2 rounded-xl text-xs font-bold transition-all text-gray-700 hover:text-black">Roldanas</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                
+                <!-- Modelo Fotográfico con Capas Vectoriales y Red Dots -->
+                <div class="lg:col-span-7 bg-white border border-gray-200 rounded-3xl p-4 flex flex-col justify-between relative shadow-inner min-h-[420px] overflow-hidden">
+                    <div class="absolute top-4 left-4 z-10">
+                        <span class="text-[11px] bg-white/95 backdrop-blur border border-gray-300 px-3 py-1 rounded-full text-gray-800 font-bold uppercase tracking-wider shadow-sm">
+                            Componentes 1:1 Competición
+                        </span>
+                    </div>
+
+                    <div class="flex-grow flex items-center justify-center p-2 relative w-full">
+                        <svg id="drivetrain-svg" viewBox="0 0 1000 550" class="w-full h-auto select-none overflow-visible">
+                            <defs>
+                                <filter id="glow-effect" x="-30%" y="-30%" width="160%" height="160%">
+                                    <feGaussianBlur stdDeviation="8" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                            </defs>
+
+                            <!-- Imagen Fotorrealista de la Transmisión -->
+                            <image href="images/Desarrollo_bicileta.png" x="0" y="0" width="1000" height="550" preserveAspectRatio="xMidYMid meet" />
+
+                            <!-- Capas Vectoriales de Resplandor -->
+                            <g id="glow-platos" class="glow-overlay">
+                                <circle cx="735" cy="275" r="145" stroke="#800020" stroke-width="6" fill="rgba(128,0,32,0.18)" filter="url(#glow-effect)" />
+                                <rect x="710" y="240" width="250" height="55" rx="25" stroke="#800020" stroke-width="5" fill="rgba(128,0,32,0.2)" transform="rotate(3 710 240)" filter="url(#glow-effect)" />
+                            </g>
+
+                            <g id="glow-desviador_delantero" class="glow-overlay">
+                                <path d="M 590 190 L 630 110 L 705 110 L 710 170 L 640 215 Z" stroke="#800020" stroke-width="5" fill="rgba(128,0,32,0.25)" filter="url(#glow-effect)" />
+                            </g>
+
+                            <g id="glow-cadena" class="glow-overlay">
+                                <path d="M 230 160 L 670 145" stroke="#800020" stroke-width="12" stroke-linecap="round" fill="none" filter="url(#glow-effect)" />
+                                <path d="M 760 380 L 195 440" stroke="#800020" stroke-width="12" stroke-linecap="round" fill="none" filter="url(#glow-effect)" />
+                            </g>
+
+                            <g id="glow-cassette" class="glow-overlay">
+                                <circle cx="225" cy="225" r="120" stroke="#800020" stroke-width="6" fill="rgba(128,0,32,0.22)" filter="url(#glow-effect)" />
+                            </g>
+
+                            <g id="glow-cambio_trasero" class="glow-overlay">
+                                <path d="M 140 270 L 220 250 L 285 315 L 260 380 L 180 340 Z" stroke="#800020" stroke-width="5" fill="rgba(128,0,32,0.25)" filter="url(#glow-effect)" />
+                            </g>
+
+                            <g id="glow-roldanas" class="glow-overlay">
+                                <circle cx="218" cy="432" r="32" stroke="#800020" stroke-width="5" fill="rgba(128,0,32,0.3)" filter="url(#glow-effect)" />
+                                <circle cx="258" cy="358" r="28" stroke="#800020" stroke-width="5" fill="rgba(128,0,32,0.3)" filter="url(#glow-effect)" />
+                                <circle cx="735" cy="275" r="36" stroke="#800020" stroke-width="5" fill="rgba(128,0,32,0.3)" filter="url(#glow-effect)" />
+                            </g>
+
+                            <!-- Red Dots Táctiles -->
+                            <g class="cursor-pointer" onclick="selectDrivetrainPart('platos')">
+                                <circle cx="735" cy="140" r="22" fill="#800020" fill-opacity="0.3" class="animate-ping"/>
+                                <circle cx="735" cy="140" r="11" fill="#800020" stroke="#ffffff" stroke-width="3"/>
+                            </g>
+                            <g class="cursor-pointer" onclick="selectDrivetrainPart('platos')">
+                                <circle cx="935" cy="255" r="20" fill="#800020" fill-opacity="0.3" class="animate-ping"/>
+                                <circle cx="935" cy="255" r="10" fill="#800020" stroke="#ffffff" stroke-width="3"/>
+                            </g>
+                            <g class="cursor-pointer" onclick="selectDrivetrainPart('desviador_delantero')">
+                                <circle cx="650" cy="150" r="22" fill="#800020" fill-opacity="0.3" class="animate-ping"/>
+                                <circle cx="650" cy="150" r="11" fill="#800020" stroke="#ffffff" stroke-width="3"/>
+                            </g>
+                            <g class="cursor-pointer" onclick="selectDrivetrainPart('cadena')">
+                                <circle cx="450" cy="152" r="22" fill="#800020" fill-opacity="0.3" class="animate-ping"/>
+                                <circle cx="450" cy="152" r="11" fill="#800020" stroke="#ffffff" stroke-width="3"/>
+                            </g>
+                            <g class="cursor-pointer" onclick="selectDrivetrainPart('cassette')">
+                                <circle cx="225" cy="180" r="22" fill="#800020" fill-opacity="0.3" class="animate-ping"/>
+                                <circle cx="225" cy="180" r="11" fill="#800020" stroke="#ffffff" stroke-width="3"/>
+                            </g>
+                            <g class="cursor-pointer" onclick="selectDrivetrainPart('cambio_trasero')">
+                                <circle cx="220" cy="305" r="22" fill="#800020" fill-opacity="0.3" class="animate-ping"/>
+                                <circle cx="220" cy="305" r="11" fill="#800020" stroke="#ffffff" stroke-width="3"/>
+                            </g>
+                            <g class="cursor-pointer" onclick="selectDrivetrainPart('roldanas')">
+                                <circle cx="218" cy="432" r="22" fill="#800020" fill-opacity="0.3" class="animate-ping"/>
+                                <circle cx="218" cy="432" r="11" fill="#800020" stroke="#ffffff" stroke-width="3"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="mt-2 flex items-center justify-between text-xs text-gray-500 font-medium">
+                        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#800020]"></span> Puntos táctiles interactivos vinculados</span>
+                        <span class="text-[#800020] font-bold">Diagnóstico Biomecánico <i class="fa-solid fa-fingerprint ml-1"></i></span>
+                    </div>
+                </div>
+
+                <!-- Panel Lateral de Telemetría -->
+                <div class="lg:col-span-5 bg-white border border-gray-200 rounded-3xl p-6 flex flex-col justify-between shadow-sm">
+                    <div id="drivetrain-info-container" class="space-y-5">
+                        <div class="flex items-center gap-3.5">
+                            <span class="p-4 rounded-2xl bg-[#fbf0f2] text-[#800020] text-2xl border border-[#800020]/20" id="part-icon">
+                                <i class="fa-solid fa-circle-notch"></i>
+                            </span>
+                            <div>
+                                <h3 class="text-2xl font-extrabold text-gray-900" id="part-title">Platos y Bielas</h3>
+                                <span class="text-xs text-[#800020] font-extrabold uppercase tracking-wider" id="part-subtitle">Transmisión de Par y Rigidez Hollowtech</span>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-600 text-sm leading-relaxed" id="part-description">
+                            La biela hueca forjada en frío y los platos asimétricos maximizan la transferencia de potencia sin flexión lateral bajo sprints de más de 1.000W. Un plato grande de 52T, 54T o 56T disminuye el ángulo de curvatura de la cadena, reduciendo hasta 1.8W de resistencia mecánica.
+                        </p>
+
+                        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-3">
+                            <h4 class="text-[11px] font-extrabold text-gray-400 uppercase tracking-widest">
+                                Telemetría de Fricción y Eficiencia
+                            </h4>
+                            <div class="grid grid-cols-2 gap-3" id="part-metrics-grid">
+                                <div class="p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+                                    <span class="text-[11px] text-gray-400 block">Eficiencia Mecánica</span>
+                                    <span class="text-sm font-extrabold text-gray-900">~98.9%</span>
+                                </div>
+                                <div class="p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+                                    <span class="text-[11px] text-gray-400 block">Pérdida por Fricción</span>
+                                    <span class="text-sm font-extrabold text-[#800020]">0.4 - 0.7 W</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
+                        <span>Multimarcas Sport Engineering</span>
+                        <span class="text-gray-900 font-bold">Laboratorio Dinámico</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Selector de Grupos -->
+        <section class="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-[#800020]"></i> Relaciones de Fábrica (Shimano vs. SRAM)
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-1">Selecciona una gama para precargar sus combinaciones oficiales de platos y piñones.</p>
+                </div>
+                <div class="inline-flex rounded-2xl p-1.5 bg-gray-100 border border-gray-200 self-start md:self-auto">
+                    <button id="brand-shimano-btn" onclick="filterBrand('shimano')" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-[#800020] text-white shadow-sm transition-all">SHIMANO (12v)</button>
+                    <button id="brand-sram-btn" onclick="filterBrand('sram')" class="px-5 py-2.5 rounded-xl text-xs font-extrabold text-gray-600 hover:text-black transition-all">SRAM AXS (12v)</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="groups-container">
+                <!-- Inyectado por JS -->
+            </div>
+        </section>
+
+        <!-- Panel de Parámetros y Simulación -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <div class="lg:col-span-5 bg-white border border-gray-200 rounded-3xl p-6 shadow-sm space-y-6">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center justify-between border-b border-gray-100 pb-3">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-sliders text-[#800020]"></i> Entorno de Simulación</span>
+                    <button onclick="resetDefaults()" class="text-xs text-[#800020] hover:underline font-bold">Restablecer</button>
+                </h3>
+
+                <!-- Plato Delantero con opción de 56T -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <label class="text-gray-700 font-bold">Plato Delantero:</label>
+                        <span class="text-[#800020] font-extrabold text-base bg-[#fbf0f2] px-3 py-0.5 rounded-xl" id="plato-val">50T</span>
+                    </div>
+                    <input type="range" id="plato-input" min="30" max="56" value="50" step="1" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-[11px] text-gray-400 font-medium">
+                        <span>30T (SRAM Wide)</span>
+                        <span>48/50T (Compact)</span>
+                        <span>54/56T (Pro Racing)</span>
+                    </div>
+                </div>
+
+                <!-- Piñón -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <label class="text-gray-700 font-bold">Corona de Piñón (Trasero):</label>
+                        <span class="text-[#800020] font-extrabold text-base bg-[#fbf0f2] px-3 py-0.5 rounded-xl" id="pinon-val">15T</span>
+                    </div>
+                    <input type="range" id="pinon-input" min="10" max="34" value="15" step="1" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-[11px] text-gray-400 font-medium">
+                        <span>10T (SRAM AXS)</span>
+                        <span>11T (Shimano)</span>
+                        <span>34T (Gran Fondo)</span>
+                    </div>
+                </div>
+
+                <!-- Cadencia -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <label class="text-gray-700 font-bold">Cadencia de Pedaleo:</label>
+                        <span class="text-[#800020] font-extrabold text-base bg-[#fbf0f2] px-3 py-0.5 rounded-xl" id="cadencia-val">90 RPM</span>
+                    </div>
+                    <input type="range" id="cadencia-input" min="50" max="120" value="90" step="1" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-[11px] text-gray-400 font-medium">
+                        <span>50 RPM (Fuerza)</span>
+                        <span>90 RPM (Óptima)</span>
+                        <span>120 RPM (Sprint)</span>
+                    </div>
+                </div>
+
+                <!-- Potencia con título actualizado -->
+                <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center text-xs font-bold text-gray-700">
+                            <span>Potencia (W) o pon tu FTP:</span>
+                            <span class="text-[#800020]" id="power-val">220 W</span>
+                        </div>
+                        <input type="range" id="power-input" min="100" max="600" value="220" step="5" class="w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center text-xs font-bold text-gray-700">
+                            <span>Peso (Bici + Rider):</span>
+                            <span class="text-[#800020]" id="weight-val">78 kg</span>
+                        </div>
+                        <input type="range" id="weight-input" min="55" max="115" value="78" step="1" class="w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Pendiente -->
+                <div class="space-y-2 pt-2 border-t border-gray-100">
+                    <div class="flex justify-between items-center text-sm">
+                        <label class="text-gray-700 font-bold">Inclinación de Pendiente:</label>
+                        <span class="text-[#800020] font-extrabold text-base bg-[#fbf0f2] px-3 py-0.5 rounded-xl" id="slope-val">0.0% (Plano)</span>
+                    </div>
+                    <input type="range" id="slope-input" min="-5" max="16" value="0" step="0.5" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-[11px] text-gray-400 font-medium">
+                        <span>-5% (Descenso)</span>
+                        <span>0% (Plano)</span>
+                        <span>8% (Puerto)</span>
+                        <span>16% (Extremo)</span>
+                    </div>
+                </div>
+
+                <!-- Selector de Roldanas CeramicSpeed vs Estándar -->
+                <div class="pt-3 border-t border-gray-100 space-y-2">
+                    <label class="text-xs font-bold text-gray-700 flex items-center justify-between">
+                        <span class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrows-spin text-[#800020]"></i> Sistema de Roldanas:
+                        </span>
+                        <span id="cs-savings-badge" class="text-[10px] font-black uppercase text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md hidden">
+                            +2.8 W Cerámicos
+                        </span>
+                    </label>
+                    <div class="grid grid-cols-2 gap-2 bg-gray-100 p-1.5 rounded-2xl">
+                        <button type="button" id="btn-roldanas-std" onclick="setPulleySystem(false)" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-gray-900 shadow-sm border border-gray-200">
+                            Estándar (11T/12T)
+                        </button>
+                        <button type="button" id="btn-roldanas-cs" onclick="setPulleySystem(true)" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-gray-600 hover:text-black">
+                            <i class="fa-solid fa-gem text-amber-500 mr-1"></i>CeramicSpeed
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-gray-500" id="cs-info-text">
+                        Roldanas de serie Shimano / SRAM. Resistencia estimada: <strong>~1.2 W</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Panel de Resultados -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
+                        Resultados Cinemáticos y Dinámica en Tiempo Real
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-2xl text-center">
+                            <span class="text-[11px] text-gray-500 block uppercase font-bold tracking-wider mb-1">Ratio</span>
+                            <span class="text-2xl sm:text-3xl font-extrabold text-gray-900" id="calc-relacion">3.33</span>
+                            <span class="text-[10px] text-gray-400 block mt-1">Giros rueda/pedal</span>
+                        </div>
+
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-2xl text-center">
+                            <span class="text-[11px] text-gray-500 block uppercase font-bold tracking-wider mb-1">Metros Avance</span>
+                            <span class="text-2xl sm:text-3xl font-extrabold text-[#800020]" id="calc-avance">7.01 m</span>
+                            <span class="text-[10px] text-gray-400 block mt-1">Por pedalada</span>
+                        </div>
+
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-2xl text-center">
+                            <span class="text-[11px] text-gray-500 block uppercase font-bold tracking-wider mb-1">Vel. Desarrollo</span>
+                            <span class="text-2xl sm:text-3xl font-extrabold text-gray-900" id="calc-vel-gear">37.9 km/h</span>
+                            <span class="text-[10px] text-gray-400 block mt-1">A la cadencia fijada</span>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-[#800020] to-[#5c0017] p-4 rounded-2xl text-center text-white shadow-lg shadow-[#800020]/25 relative overflow-hidden">
+                            <span class="text-[11px] text-white/80 block uppercase font-bold tracking-wider mb-1">Vel. Física Real</span>
+                            <span class="text-2xl sm:text-3xl font-extrabold text-white" id="calc-vel-phys">34.8 km/h</span>
+                            <span class="text-[10px] text-white/70 block mt-1" id="calc-vel-phys-sub">Con W + Inclinación</span>
+                            <span id="cs-boost-indicator" class="absolute top-1 right-2 text-[9px] font-extrabold text-amber-300 hidden">OSPW BOOST</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 p-4 rounded-2xl border flex items-center justify-between" id="cadence-match-box">
+                        <div class="flex items-center gap-3">
+                            <span class="p-2.5 rounded-xl bg-white border shadow-sm text-sm" id="cadence-match-icon">
+                                <i class="fa-solid fa-check text-green-600"></i>
+                            </span>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900" id="cadence-match-title">Equilibrio Potencia / Desarrollo</h4>
+                                <p class="text-[11px] text-gray-500" id="cadence-match-desc">La cadencia configurada coincide adecuadamente con la potencia entregada.</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-extrabold px-3 py-1 rounded-full" id="cadence-match-tag">Óptimo</span>
+                    </div>
+                </div>
+
+                <!-- Resumen CeramicSpeed -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+                        <div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-800 border border-amber-200/80 mb-1">
+                                <i class="fa-solid fa-gem text-amber-600"></i> Eficiencia Marginal WorldTour
+                            </span>
+                            <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+                                Sistema de Roldanas Cerámicas (CeramicSpeed OSPW)
+                            </h3>
+                            <p class="text-xs text-gray-500">Sobredimensionamiento de poleas (13T a 19T) y rodamientos de nitruro de silicio (Si₃N₄).</p>
+                        </div>
+                        <div class="text-right self-start sm:self-auto bg-[#fbf0f2] px-3.5 py-2 rounded-2xl border border-[#800020]/20">
+                            <span class="text-[10px] uppercase font-extrabold text-[#800020] block">Ganancia Neta</span>
+                            <span class="text-sm font-black text-gray-900">2.4W - 4.0W</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="p-3.5 bg-gray-50 rounded-2xl border border-gray-200/80">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Fricción de Rodamiento</span>
+                            <span class="text-base font-extrabold text-gray-900">-40% a -60%</span>
+                            <span class="text-[10px] text-gray-500 block mt-0.5">Bolas cerámicas grado 3</span>
+                        </div>
+                        <div class="p-3.5 bg-gray-50 rounded-2xl border border-gray-200/80">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Curvatura de Cadena</span>
+                            <span class="text-base font-extrabold text-[#800020]">13T / 19T</span>
+                            <span class="text-[10px] text-gray-500 block mt-0.5">Menor flexión de eslabones</span>
+                        </div>
+                        <div class="p-3.5 bg-gray-50 rounded-2xl border border-gray-200/80">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Ahorro en 40 km</span>
+                            <span class="text-base font-extrabold text-gray-900">30 - 45 seg</span>
+                            <span class="text-[10px] text-gray-500 block mt-0.5">A velocidad de 38 km/h</span>
+                        </div>
+                    </div>
+
+                    <button onclick="selectDrivetrainPart('roldanas')" class="w-full bg-gray-900 hover:bg-[#800020] text-white font-bold text-xs py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-arrows-spin"></i>
+                        <span>Inspeccionar Roldanas en el Diagrama CAD</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white border-t border-gray-800 py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <svg width="240" height="48" viewBox="0 0 420 85" class="h-10 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-style="italic" font-size="46" fill="#ffffff" letter-spacing="1">MULTIMARCAS</text>
+                    <text x="145" y="78" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-style="italic" font-size="44" fill="#800020" letter-spacing="3">SPORT</text>
+                </svg>
+                <div class="h-8 w-px bg-gray-800 hidden sm:block"></div>
+                <span class="text-xs text-gray-400">Simulador de Transmisión de Competición</span>
+            </div>
+
+            <p class="text-xs text-gray-400 text-center md:text-right">
+                © 2026 Multimarcas Sport. Desarrollado con modelos cinemáticos de precisión para ciclismo de carretera.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script de Interactividad y Cálculo -->
+    <script>
+        let useCeramicSpeed = false;
+
+        function setPulleySystem(isCeramic) {
+            useCeramicSpeed = isCeramic;
+            const btnStd = document.getElementById('btn-roldanas-std');
+            const btnCs = document.getElementById('btn-roldanas-cs');
+            const infoText = document.getElementById('cs-info-text');
+            const savingsBadge = document.getElementById('cs-savings-badge');
+            const boostIndicator = document.getElementById('cs-boost-indicator');
+
+            if (isCeramic) {
+                btnCs.className = "py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all bg-[#800020] text-white shadow-sm";
+                btnStd.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-gray-600 hover:text-black";
+                infoText.innerHTML = "OSPW Cerámico activo (13T/19T). Fricción reducida: <strong>0.3 W</strong> (Ganancia de <strong>+2.8 W</strong> mecánicos).";
+                savingsBadge.classList.remove('hidden');
+                boostIndicator.classList.remove('hidden');
+            } else {
+                btnStd.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all bg-white text-gray-900 shadow-sm border border-gray-200";
+                btnCs.className = "py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-gray-600 hover:text-black";
+                infoText.innerHTML = "Roldanas de serie Shimano / SRAM. Resistencia estimada: <strong>~1.2 W</strong>.";
+                savingsBadge.classList.add('hidden');
+                boostIndicator.classList.add('hidden');
+            }
+            updateAllCalculations();
+        }
+
+        const drivetrainPartsData = {
+            platos: {
+                title: "Platos y Bielas",
+                subtitle: "Transmisión de Par y Rigidez Hollowtech",
+                icon: '<i class="fa-solid fa-circle-notch"></i>',
+                description: "La biela hueca forjada en frío y los platos asimétricos maximizan la transferencia de potencia sin flexión lateral bajo sprints de más de 1.000W. Un plato grande de 52T, 54T o 56T disminuye el ángulo de curvatura de la cadena, reduciendo hasta 1.8W de resistencia mecánica.",
+                metrics: [
+                    { name: "Eficiencia Mecánica", val: "~98.9%" },
+                    { name: "Pérdida por Fricción", val: "0.4 - 0.7 W" },
+                    { name: "Material", val: "Aluminio 7075-T6 CNC" },
+                    { name: "Ventaja", val: "Menor flexión de cadena" }
+                ],
+                glowId: "glow-platos"
+            },
+            desviador_delantero: {
+                title: "Desviador Delantero",
+                subtitle: "Guía de Guarnición y Conmutación Angular",
+                icon: '<i class="fa-solid fa-arrows-split-up-and-left"></i>',
+                description: "Gestiona el cruce y salto de cadena entre platos con servomotores de microajuste automático (Auto-Trim). Evita el roce lateral de la cadena en combinaciones extremas, manteniendo la pérdida por fricción por debajo de 0.1W.",
+                metrics: [
+                    { name: "Tiempo de Cambio", val: "< 0.18 segundos" },
+                    { name: "Auto-Trim", val: "Alineación continua" },
+                    { name: "Capacidad", val: "Saltos de 16T (50/34 a 54/40)" },
+                    { name: "Rigidez Guía", val: "Acero cromado templado" }
+                ],
+                glowId: "glow-desviador_delantero"
+            },
+            cadena: {
+                title: "Cadena de Transmisión",
+                subtitle: "Articulación y Tensión Dinámica",
+                icon: '<i class="fa-solid fa-link"></i>',
+                description: "Transmite la fuerza con más de 114 eslabones articulándose hasta 45.000 veces por minuto. Las cadenas de 12v con tratamiento PTFE/SIL-TEC reducen el coeficiente de fricción a menos de 0.03 bajo tensiones de hasta 1.500N.",
+                metrics: [
+                    { name: "Tensión de Trabajo", val: "300N - 1500N en sprint" },
+                    { name: "Eficiencia de Transmisión", val: "97.8% - 99.1%" },
+                    { name: "Tratamiento", val: "Recubrimiento SIL-TEC / Cromo" },
+                    { name: "Desviación Lateral", val: "< 2.3° recomendada" }
+                ],
+                glowId: "glow-cadena"
+            },
+            cassette: {
+                title: "Cassette de Piñones",
+                subtitle: "Graduación y Relación de Avance",
+                icon: '<i class="fa-solid fa-layer-group"></i>',
+                description: "Determina la multiplicación del giro. El piñón de 10T de SRAM ofrece un rango superior con platos más pequeños, mientras que el piñón de 11T de Shimano prioriza una menor curvatura de cadena, reduciendo pérdidas mecánicas en velocidades de crucero elevadas.",
+                metrics: [
+                    { name: "Rango Disponible", val: "10T hasta 34T" },
+                    { name: "Efecto Poligonal", val: "Mayor en 10T que en 11T" },
+                    { name: "Construcción", val: "Acero / Titanio Monobloque" },
+                    { name: "Sweet Spot", val: "Coronas 15T-19T (máx. eficiencia)" }
+                ],
+                glowId: "glow-cassette"
+            },
+            cambio_trasero: {
+                title: "Cambio Trasero Electrónico",
+                subtitle: "Tensión de Pata y Servomotores",
+                icon: '<i class="fa-solid fa-code-branch"></i>',
+                description: "Mantiene la tensión constante en la cadena y gestiona el cruce. Los sistemas modernos Di2 y AXS utilizan motores paso a paso de alta velocidad e integran embragues hidráulicos u orbitales para evitar oscilaciones de la cadena en asfalto irregular.",
+                metrics: [
+                    { name: "Tiempo de Cambio", val: "< 200 milisegundos" },
+                    { name: "Capacidad Total", val: "Hasta 39T" },
+                    { name: "Conectividad", val: "ANT+ / Bluetooth BLE" },
+                    { name: "Alineación", val: "Microajuste milimétrico" }
+                ],
+                glowId: "glow-cambio_trasero"
+            },
+            roldanas: {
+                title: "Roldanas CeramicSpeed y Ejes de Giro",
+                subtitle: "Tecnología OSPW y Rodamientos Cerámicos",
+                icon: '<i class="fa-solid fa-arrows-spin"></i>',
+                description: "Las poleas sobredimensionadas (OSPW CeramicSpeed) reducen la fricción rotacional y el ángulo de entrada de la cadena. Sus rodamientos cerámicos de grado 3 ofrecen una suavidad insuperable, disminuyendo el rozamiento del desviador hasta en un 60%.",
+                metrics: [
+                    { name: "Resistencia OSPW", val: "0.3W (CeramicSpeed) vs 1.2W (OEM)" },
+                    { name: "Dientes", val: "13T Superior / 19T Inferior" },
+                    { name: "Material Bolas", val: "Nitruro de Silicio Si3N4" },
+                    { name: "Vida Útil", val: "3x a 5x superior al acero" }
+                ],
+                glowId: "glow-roldanas"
+            }
+        };
+
+        function selectDrivetrainPart(partKey) {
+            document.querySelectorAll('.glow-overlay').forEach(el => {
+                el.classList.remove('glow-overlay-active');
+            });
+
+            ['platos', 'desviador_delantero', 'cadena', 'cassette', 'cambio_trasero', 'roldanas'].forEach(k => {
+                const b = document.getElementById(`btn-part-${k}`);
+                if (b) {
+                    b.className = "px-3 py-2 rounded-xl text-xs font-bold transition-all text-gray-700 hover:text-black";
+                }
+            });
+
+            const activeBtn = document.getElementById(`btn-part-${partKey}`);
+            if (activeBtn) {
+                activeBtn.className = "px-3 py-2 rounded-xl text-xs font-bold transition-all bg-[#800020] text-white shadow-sm";
+            }
+
+            const data = drivetrainPartsData[partKey];
+            if (!data) return;
+
+            const glowElement = document.getElementById(data.glowId);
+            if (glowElement) {
+                glowElement.classList.add('glow-overlay-active');
+            }
+
+            document.getElementById('part-icon').innerHTML = data.icon;
+            document.getElementById('part-title').textContent = data.title;
+            document.getElementById('part-subtitle').textContent = data.subtitle;
+            document.getElementById('part-description').textContent = data.description;
+
+            const grid = document.getElementById('part-metrics-grid');
+            grid.innerHTML = '';
+            data.metrics.forEach(m => {
+                const card = document.createElement('div');
+                card.className = "p-3 bg-white rounded-xl border border-gray-200 shadow-sm";
+                card.innerHTML = `
+                    <span class="text-[11px] text-gray-400 block">${m.name}</span>
+                    <span class="text-sm font-extrabold text-gray-900">${m.val}</span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const groupsData = {
+            shimano: [
+                {
+                    name: "Shimano 105 Di2 (R7100)",
+                    badge: "12v Electrónico",
+                    options: [
+                        { label: "Compact Escalador (50/34 & 11-34T)", plato: 50, pinon: 34 },
+                        { label: "Mid-Compact (52/36 & 11-34T)", plato: 52, pinon: 34 }
+                    ],
+                    desc: "Piñón de inicio en 11T. Desarrollado para gran fondo y resistencia con cassettes hasta 11-36T."
+                },
+                {
+                    name: "Shimano Ultegra Di2 (R8100)",
+                    badge: "12v Competición",
+                    options: [
+                        { label: "All-Round Pro (52/36 & 11-30T)", plato: 52, pinon: 30 },
+                        { label: "Gran Fondo (50/34 & 11-34T)", plato: 50, pinon: 34 }
+                    ],
+                    desc: "Equilibrio referente del pelotón. Saltos de 1 diente entre piñones intermedios para cadencia constante."
+                },
+                {
+                    name: "Shimano Dura-Ace Di2 (R9200)",
+                    badge: "WorldTour Flagship",
+                    options: [
+                        { label: "Aero Sprint (54/40 & 11-30T)", plato: 54, pinon: 11 },
+                        { label: "Escalador Pro (52/36 & 11-30T)", plato: 52, pinon: 30 }
+                    ],
+                    desc: "Opciones con plato 54T para velocidades superiores a 55 km/h con titanio en las 5 coronas mayores."
+                }
+            ],
+            sram: [
+                {
+                    name: "SRAM Rival AXS",
+                    badge: "12v Wireless",
+                    options: [
+                        { label: "Standard X-Range (48/35 & 10-30T)", plato: 48, pinon: 10 },
+                        { label: "Wide Montaña (43/30 & 10-36T)", plato: 43, pinon: 30 }
+                    ],
+                    desc: "Incorpora corona de 10T que permite usar platos más compactos y saltos homogéneos de 13T entre platos."
+                },
+                {
+                    name: "SRAM Force AXS",
+                    badge: "12v Performance",
+                    options: [
+                        { label: "Aero All-Road (48/35 & 10-28T)", plato: 48, pinon: 28 },
+                        { label: "Pro Cadence (50/37 & 10-33T)", plato: 50, pinon: 33 }
+                    ],
+                    desc: "Platos direct-mount de una sola pieza mecanizada y cadena FlatTop para mayor resistencia y aerodinámica."
+                },
+                {
+                    name: "SRAM Red AXS",
+                    badge: "Ultra-Light Flagship",
+                    options: [
+                        { label: "High Speed (50/37 & 10-28T)", plato: 50, pinon: 10 },
+                        { label: "WorldTour Racing (52/39 & 10-33T)", plato: 52, pinon: 33 }
+                    ],
+                    desc: "Cassette tallado en un bloque macizo de acero con arquitectura X-Dome para el menor peso del mercado."
+                }
+            ]
+        };
+
+        let currentBrand = 'shimano';
+
+        function filterBrand(brand) {
+            currentBrand = brand;
+            const sBtn = document.getElementById('brand-shimano-btn');
+            const srBtn = document.getElementById('brand-sram-btn');
+
+            if (brand === 'shimano') {
+                sBtn.className = "px-5 py-2.5 rounded-xl text-xs font-extrabold bg-[#800020] text-white shadow-sm transition-all";
+                srBtn.className = "px-5 py-2.5 rounded-xl text-xs font-extrabold text-gray-600 hover:text-black transition-all";
+            } else {
+                srBtn.className = "px-5 py-2.5 rounded-xl text-xs font-extrabold bg-[#800020] text-white shadow-sm transition-all";
+                sBtn.className = "px-5 py-2.5 rounded-xl text-xs font-extrabold text-gray-600 hover:text-black transition-all";
+            }
+            renderGroupCards();
+        }
+
+        function renderGroupCards() {
+            const container = document.getElementById('groups-container');
+            container.innerHTML = '';
+            
+            groupsData[currentBrand].forEach((group) => {
+                const card = document.createElement('div');
+                card.className = "border border-gray-200 bg-gray-50/80 p-5 rounded-2xl hover:border-[#800020] transition-all flex flex-col justify-between";
+                
+                let optionsHtml = group.options.map(opt => `
+                    <button onclick="applyPreset(${opt.plato}, ${opt.pinon})" class="w-full text-left text-xs bg-white border border-gray-200 hover:border-[#800020] hover:text-[#800020] px-3.5 py-2.5 rounded-xl font-bold transition-all flex items-center justify-between mb-2 shadow-sm">
+                        <span>${opt.label}</span>
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-extrabold text-gray-900">${group.name}</span>
+                            <span class="text-[10px] bg-white border border-gray-200 text-gray-700 font-bold px-2.5 py-0.5 rounded-full">${group.badge}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-4">${group.desc}</p>
+                    </div>
+                    <div class="pt-3 border-t border-gray-200">
+                        <span class="text-[10px] uppercase font-bold text-gray-400 block mb-2">Cargar Combinación:</span>
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function applyPreset(plato, pinon) {
+            document.getElementById('plato-input').value = plato;
+            document.getElementById('pinon-input').value = pinon;
+            updateAllCalculations();
+        }
+
+        function resetDefaults() {
+            document.getElementById('plato-input').value = 50;
+            document.getElementById('pinon-input').value = 15;
+            document.getElementById('cadencia-input').value = 90;
+            document.getElementById('power-input').value = 220;
+            document.getElementById('weight-input').value = 78;
+            document.getElementById('slope-input').value = 0;
+            setPulleySystem(false);
+            updateAllCalculations();
+        }
+
+        const platoInput = document.getElementById('plato-input');
+        const pinonInput = document.getElementById('pinon-input');
+        const cadenciaInput = document.getElementById('cadencia-input');
+        const powerInput = document.getElementById('power-input');
+        const weightInput = document.getElementById('weight-input');
+        const slopeInput = document.getElementById('slope-input');
+
+        const platoVal = document.getElementById('plato-val');
+        const pinonVal = document.getElementById('pinon-val');
+        const cadenciaVal = document.getElementById('cadencia-val');
+        const powerVal = document.getElementById('power-val');
+        const weightVal = document.getElementById('weight-val');
+        const slopeVal = document.getElementById('slope-val');
+
+        const calcRelacion = document.getElementById('calc-relacion');
+        const calcAvance = document.getElementById('calc-avance');
+        const calcVelGear = document.getElementById('calc-vel-gear');
+        const calcVelPhys = document.getElementById('calc-vel-phys');
+
+        function updateAllCalculations() {
+            const plato = parseInt(platoInput.value);
+            const pinon = parseInt(pinonInput.value);
+            const cadencia = parseInt(cadenciaInput.value);
+            let power = parseFloat(powerInput.value);
+            const weight = parseFloat(weightInput.value);
+            const slope = parseFloat(slopeInput.value);
+
+            platoVal.textContent = `${plato}T`;
+            pinonVal.textContent = `${pinon}T`;
+            cadenciaVal.textContent = `${cadencia} RPM`;
+            powerVal.textContent = `${power} W`;
+            weightVal.textContent = `${weight} kg`;
+            slopeVal.textContent = slope === 0 ? "0.0% (Plano)" : (slope > 0 ? `+${slope.toFixed(1)}% (Subida)` : `${slope.toFixed(1)}% (Bajada)`);
+
+            const relacion = plato / pinon;
+            const ruedaCircunferencia = 2.105;
+            const avance = relacion * ruedaCircunferencia;
+            const velGearKmh = (avance * cadencia * 60) / 1000;
+
+            calcRelacion.textContent = relacion.toFixed(2);
+            calcAvance.textContent = `${avance.toFixed(2)} m`;
+            calcVelGear.textContent = `${velGearKmh.toFixed(1)} km/h`;
+
+            const effectivePower = useCeramicSpeed ? (power + 2.8) : power;
+
+            const CdA = 0.32;
+            const airDensity = 1.225;
+            const Crr = 0.004;
+            const gravityAcc = 9.81;
+            const theta = Math.atan(slope / 100);
+            const m_g = weight * gravityAcc;
+
+            const F_gravity = m_g * Math.sin(theta);
+            const F_rolling = m_g * Crr * Math.cos(theta);
+            const constForces = F_gravity + F_rolling;
+            const aeroConst = 0.5 * CdA * airDensity;
+
+            let v_min = 0.1, v_max = 35.0, v = 5.0;
+            for (let i = 0; i < 40; i++) {
+                v = (v_min + v_max) / 2;
+                const P_req = constForces * v + aeroConst * Math.pow(v, 3);
+                if (P_req > effectivePower) v_max = v;
+                else v_min = v;
+            }
+            const velPhysKmh = v * 3.6;
+            calcVelPhys.textContent = `${velPhysKmh.toFixed(1)} km/h`;
+
+            updateCadenceDiagnostic(velGearKmh, velPhysKmh);
+        }
+
+        function updateCadenceDiagnostic(vGear, vPhys) {
+            const diff = Math.abs(vGear - vPhys);
+            const box = document.getElementById('cadence-match-box');
+            const icon = document.getElementById('cadence-match-icon');
+            const title = document.getElementById('cadence-match-title');
+            const desc = document.getElementById('cadence-match-desc');
+            const tag = document.getElementById('cadence-match-tag');
+
+            if (diff < 4.0) {
+                box.className = "mt-5 p-4 rounded-2xl border border-green-200 bg-green-50/50 flex items-center justify-between";
+                icon.innerHTML = '<i class="fa-solid fa-check text-green-600"></i>';
+                title.textContent = "Desarrollo y Potencia Equilibrados";
+                desc.textContent = "La combinación de piñón y plato permite sostener la cadencia con la potencia física disponible.";
+                tag.className = "text-xs font-extrabold px-3 py-1 rounded-full bg-green-100 text-green-700";
+                tag.textContent = "Equilibrado";
+            } else if (vGear > vPhys) {
+                box.className = "mt-5 p-4 rounded-2xl border border-amber-200 bg-amber-50/50 flex items-center justify-between";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-600"></i>';
+                title.textContent = "Desarrollo Sobredimensionado (Trancado)";
+                desc.textContent = "Con esta potencia y pendiente te costará sostener las RPM. Se sugiere meter más piñón o bajar plato.";
+                tag.className = "text-xs font-extrabold px-3 py-1 rounded-full bg-amber-100 text-amber-700";
+                tag.textContent = "Sobredesarrollo";
+            } else {
+                box.className = "mt-5 p-4 rounded-2xl border border-blue-200 bg-blue-50/50 flex items-center justify-between";
+                icon.innerHTML = '<i class="fa-solid fa-bolt text-blue-600"></i>';
+                title.textContent = "Cadencia / Potencia Sobrante (Molinillo)";
+                desc.textContent = "Dispones de vatios de reserva para bajar coronas de piñón y alcanzar mayor velocidad.";
+                tag.className = "text-xs font-extrabold px-3 py-1 rounded-full bg-blue-100 text-blue-700";
+                tag.textContent = "Molinillo";
+            }
+        }
+
+        [platoInput, pinonInput, cadenciaInput, powerInput, weightInput, slopeInput].forEach(el => {
+            el.addEventListener('input', updateAllCalculations);
+        });
+
+        window.onload = function() {
+            selectDrivetrainPart('platos');
+            renderGroupCards();
+            updateAllCalculations();
+        };
+    </script>
+</body>
+</html>
